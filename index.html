@@ -15,6 +15,7 @@ h2{font-size:17px;color:var(--sea);margin:0 0 16px}.grid{display:grid;grid-templ
 label{display:block;font-size:11px;color:var(--muted);margin:0 0 6px}input,select{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:14px;background:white;color:var(--ink);font-size:14px;outline:none}
 input:focus,select:focus{border-color:var(--sea);box-shadow:0 0 0 3px rgba(0,98,111,.08)}input[readonly]{background:#ffffff}
 .actions{display:flex;gap:10px;margin-top:18px}button{border:0;border-radius:15px;padding:13px 16px;font-weight:700;cursor:pointer}.primary{background:var(--sea);color:white;flex:1}.secondary{background:transparent;border:1px solid var(--sea);color:var(--sea)}
+.selector-title{font-size:14px;margin:0 0 12px;color:var(--ink)}.selector-actions{display:flex;gap:8px;margin-top:12px}.selector-actions button{padding:10px 13px}.selector-results{margin-top:12px;max-height:360px;overflow:auto;border:1px solid var(--line);border-radius:16px;background:white}.selector-summary{padding:10px 12px;border-bottom:1px solid var(--line);font-size:11px;color:var(--muted);position:sticky;top:0;background:white;z-index:1}.selector-result{display:grid;grid-template-columns:1fr auto;gap:8px 12px;padding:12px;border-bottom:1px solid var(--line);align-items:center}.selector-result:last-child{border-bottom:0}.selector-result strong{font-size:13px;color:var(--sea)}.selector-result-details{font-size:11px;line-height:1.55;color:var(--muted)}.selector-result button{grid-column:2;grid-row:1/3;padding:9px 11px;border:1px solid var(--sea);background:white;color:var(--sea);border-radius:11px}.selector-message{padding:14px;font-size:12px;color:var(--muted)}.section-divider{height:1px;background:var(--line);margin:18px 0}
 .error{display:none;margin-top:12px;padding:11px 12px;border-radius:12px;background:#fff0eb;color:var(--danger);font-size:12px}.hint{font-size:11px;color:var(--muted);line-height:1.45;margin-top:6px}
 .preview{padding:18px;background:transparent;border:0;box-shadow:none}.cp-page{background:rgba(255,253,248,.96);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow);padding:25px;margin-bottom:22px;min-height:680px}.cp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding:24px;border-radius:22px;background:var(--sea);color:white}.cp-head h3{margin:9px 0 0;font-size:28px}.cp-code{font-size:12px;letter-spacing:.18em;opacity:.7}
 .lot-card{display:grid;grid-template-columns:1.05fr 1fr;gap:18px;margin-top:18px}.gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px}.gallery img{width:100%;height:220px;object-fit:contain;background:#ffffff;border-radius:18px;border:1px solid var(--line)}.gallery img:first-child{grid-column:1/-1;height:330px}
@@ -22,7 +23,7 @@ input:focus,select:focus{border-color:var(--sea);box-shadow:0 0 0 3px rgba(0,98,
 .block{margin-top:18px;padding:19px;border:1px solid var(--line);border-radius:20px;background:white}.block h3{margin:0 0 14px;color:var(--sea);font-size:18px}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px}table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left}th{background:var(--sand);color:var(--sea);font-size:10px}td:last-child,th:last-child{text-align:right}
 .empty{padding:70px 20px;text-align:center;color:var(--muted)}.hidden{display:none!important}.status{font-size:11px;color:var(--muted);margin-top:9px}.gallery img{cursor:zoom-in}.image-modal{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:9999;padding:24px}.image-modal.open{display:flex}.image-modal img{max-width:94vw;max-height:92vh;object-fit:contain;border-radius:16px;background:white}.image-modal button{position:absolute;top:20px;right:20px;z-index:2;width:44px;height:44px;border-radius:50%;font-size:24px;background:white;color:var(--ink);padding:0;cursor:pointer}
 @media(max-width:1050px){.workspace{grid-template-columns:1fr}.panel{position:static}.lot-card{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:620px){.app{padding:12px}.hero{align-items:flex-start;flex-direction:column}.grid,.facts{grid-template-columns:1fr}.full{grid-column:auto}.metrics{grid-template-columns:1fr}.gallery{grid-template-columns:1fr}.gallery img:first-child{grid-column:auto}.individual-price-spacer{display:none}}
+@media(max-width:620px){.app{padding:12px}.hero{align-items:flex-start;flex-direction:column}.grid,.facts{grid-template-columns:1fr}.full{grid-column:auto}.metrics{grid-template-columns:1fr}.gallery{grid-template-columns:1fr}.gallery img:first-child{grid-column:auto}}
 @media print{
 @page{size:A4 landscape;margin:5mm}
 
@@ -503,10 +504,20 @@ html,body,
 <main class="workspace">
 <aside class="panel">
 <section class="section"><h2>1. Лот</h2><div class="grid">
-<div class="full"><label>Введите номер лота</label><input id="lotSearch" list="lotOptions" placeholder="Например, С2-145"><datalist id="lotOptions"></datalist><div class="hint">Начните вводить номер — браузер покажет подходящие варианты.</div><div id="dataStatus" class="hint" style="margin-top:8px"> </div></div>
+<div class="full"><h3 class="selector-title">Подобрать по параметрам</h3></div>
+<div><label>Тип лота</label><select id="filterRooms"><option value="">Любой тип</option><option value="Ст">Студия</option><option value="1К">1-комнатный</option><option value="2К">2-комнатный</option></select></div>
+<div><label>Вид</label><select id="filterView"><option value="">Любой вид</option><option value="Двор">Двор</option><option value="Море">Море</option><option value="Озеро">Озеро</option><option value="Двор+Море">Двор + море</option><option value="Двор+Озеро">Двор + озеро</option><option value="ул. Морская и озеро">ул. Морская и озеро</option></select></div>
+<div><label>Цена от, ₽</label><input id="filterPriceMin" type="number" min="0" step="100000" placeholder="Не указана"></div>
+<div><label>Цена до, ₽</label><input id="filterPriceMax" type="number" min="0" step="100000" placeholder="Не указана"></div>
+<div><label>Этаж от</label><input id="filterFloorMin" type="number" min="1" step="1" placeholder="Не указан"></div>
+<div><label>Этаж до</label><input id="filterFloorMax" type="number" min="1" step="1" placeholder="Не указан"></div>
+<div><label>Площадь от, м²</label><input id="filterAreaMin" type="number" min="0" step="0.1" placeholder="Не указана"></div>
+<div><label>Площадь до, м²</label><input id="filterAreaMax" type="number" min="0" step="0.1" placeholder="Не указана"></div>
+<div class="full selector-actions"><button class="primary" id="filterBtn" type="button">Найти лоты</button><button class="secondary" id="filterResetBtn" type="button">Сбросить</button></div>
+<div class="full selector-results hidden" id="filterResults"></div>
+<div class="full section-divider"></div>
+<div class="full"><label>Или введите номер лота</label><input id="lotSearch" list="lotOptions" placeholder="Например, С2-145"><datalist id="lotOptions"></datalist><div class="hint">Начните вводить номер — браузер покажет подходящие варианты.</div><div id="dataStatus" class="hint" style="margin-top:8px"> </div></div>
 <div><label>Площадь, м²</label><input id="area" readonly></div><div><label>Базовая стоимость, ₽</label><input id="price" readonly></div>
-<div class="individual-price-spacer"></div>
-<div><label>Цена по индивидуальным условиям, ₽</label><input id="individualPrice" type="text" inputmode="numeric" autocomplete="off" placeholder="Необязательно"><div class="hint">Если поле заполнено, дальнейший расчёт выполняется по этой стоимости.</div></div>
 </div></section>
 <section class="section"><h2>2. Формы оплаты для КП</h2><div class="grid">
 <div class="payment-choice-list">
@@ -515,7 +526,6 @@ html,body,
 <label class="payment-choice" id="trancheChoice"><input type="checkbox" class="paymentCheck" value="tranche" disabled>Траншевая рассрочка</label>
 </div>
 <div id="trancheAvailabilityNote" class="payment-lock-note hidden">Траншевая рассрочка недоступна для выбранного лота.</div>
-<div id="individualLockNote" class="payment-lock-note hidden">При заполненной индивидуальной цене в КП можно выбрать только одну форму оплаты.</div>
 
 <div id="classicParams" class="payment-params hidden">
 <h3>Классическая рассрочка</h3>
@@ -568,7 +578,7 @@ const TRANCHE_LOT_CODES=new Set([
 ].map(norm));
 const investmentMap=new Map(INVESTMENT_LOTS.map(x=>[norm(x.code),x]));
 const lotReferenceById=new Map(INVESTMENT_LOTS.map(x=>[String(x.externalId),x]));
-PROFIT_LOTS=PROFIT_LOTS.map(l=>{const ref=lotReferenceById.get(String(l.externalId));return ref?{...l,building:ref.building,houseName:ref.building,floorDisplay:ref.floorDisplay,viewDisplay:ref.viewDisplay}:l});
+PROFIT_LOTS=PROFIT_LOTS.map(l=>{const ref=lotReferenceById.get(String(l.externalId));return ref?{...l,building:ref.building,houseName:ref.building,floorDisplay:ref.floorDisplay,viewDisplay:ref.viewDisplay,rooms:ref.rooms,type:ref.type}:l});
 let profitMap=new Map(PROFIT_LOTS.map(x=>[norm(x.code),x]));
 const $=id=>document.getElementById(id);
 function norm(v){return String(v||"").trim().toUpperCase().replaceAll("C","С").replace(/\s+/g,"")}
@@ -580,6 +590,47 @@ function addMonths(d,m){const x=new Date(d);x.setMonth(x.getMonth()+m);return x}
 function showError(t){$("error").textContent=t;$("error").style.display="block"} function clearError(){$("error").style.display="none"}
 function normalizeView(raw){const v=String(raw||"").toLowerCase();if(v.includes("море")&&v.includes("двор"))return "Двор+Море";if(v.includes("озер")&&v.includes("двор"))return "Двор+Озеро";if(v.includes("море"))return "Море";if(v.includes("озер"))return "Озеро";if(v.includes("коммер"))return "Двор";return "Двор"}
 function buildSelect(){const d=$("lotOptions");d.innerHTML="";[...PROFIT_LOTS].sort((a,b)=>a.code.localeCompare(b.code,"ru",{numeric:true})).forEach(l=>{const o=document.createElement("option");o.value=l.code;o.label=`${num(l.area)} м² · ${money(l.price)}`;d.appendChild(o)})}
+let filterHasRun=false;
+function filterNumber(id){const raw=$(id).value.trim();if(raw==="")return null;const value=Number(raw);return Number.isFinite(value)?value:null}
+function lotProfile(lot){return lotReferenceById.get(String(lot.externalId))||investmentMap.get(norm(lot.code))||lot}
+function filterLots(){
+ const results=$("filterResults");
+ const rooms=$("filterRooms").value,view=$("filterView").value;
+ const priceMin=filterNumber("filterPriceMin"),priceMax=filterNumber("filterPriceMax");
+ const floorMin=filterNumber("filterFloorMin"),floorMax=filterNumber("filterFloorMax");
+ const areaMin=filterNumber("filterAreaMin"),areaMax=filterNumber("filterAreaMax");
+ const invalid=[[priceMin,priceMax,"цены"],[floorMin,floorMax,"этажа"],[areaMin,areaMax,"площади"]].find(([min,max])=>min!==null&&max!==null&&min>max);
+ results.classList.remove("hidden");
+ if(invalid){results.innerHTML=`<div class="selector-message">Значение «от» для ${invalid[2]} не может быть больше значения «до».</div>`;return}
+ filterHasRun=true;
+ const lots=PROFIT_LOTS.filter(lot=>{
+   const ref=lotProfile(lot);
+   const lotRooms=String(ref.rooms||lot.rooms||"");
+   const lotView=String(ref.viewDisplay||ref.view||lot.viewDisplay||lot.viewRaw||"");
+   const lotFloor=Number(ref.floorDisplay||lot.floorDisplay||lot.floor);
+   const lotArea=Number(lot.area||ref.area);
+   const lotPrice=Number(lot.price);
+   return (!rooms||lotRooms===rooms)&&(!view||lotView===view)
+     &&(priceMin===null||lotPrice>=priceMin)&&(priceMax===null||lotPrice<=priceMax)
+     &&(floorMin===null||lotFloor>=floorMin)&&(floorMax===null||lotFloor<=floorMax)
+     &&(areaMin===null||lotArea>=areaMin)&&(areaMax===null||lotArea<=areaMax);
+ }).sort((a,b)=>a.price-b.price||a.code.localeCompare(b.code,"ru",{numeric:true}));
+ results.innerHTML="";
+ const summary=document.createElement("div");summary.className="selector-summary";summary.textContent=lots.length?`Найдено лотов: ${lots.length}. Сначала показаны самые доступные по цене.`:"По заданным параметрам доступных лотов не найдено.";results.appendChild(summary);
+ for(const lot of lots){
+   const ref=lotProfile(lot),row=document.createElement("div");row.className="selector-result";
+   const main=document.createElement("strong");main.textContent=`${lot.code} · ${money(lot.price)}`;
+   const details=document.createElement("div");details.className="selector-result-details";
+   const roomLabel=ref.rooms==="Ст"?"Студия":ref.rooms==="1К"?"1-комнатный":ref.rooms==="2К"?"2-комнатный":ref.rooms||"Тип не указан";
+   details.textContent=`${roomLabel} · ${num(lot.area)} м² · ${ref.floorDisplay||lot.floorDisplay||lot.floor} этаж · ${ref.viewDisplay||ref.view||lot.viewDisplay||lot.viewRaw||"Вид не указан"}`;
+   const button=document.createElement("button");button.type="button";button.dataset.lotCode=lot.code;button.textContent="Выбрать";
+   row.append(main,details,button);results.appendChild(row);
+ }
+}
+function resetLotFilters(){
+ ["filterRooms","filterView","filterPriceMin","filterPriceMax","filterFloorMin","filterFloorMax","filterAreaMin","filterAreaMax"].forEach(id=>$(id).value="");
+ filterHasRun=false;$("filterResults").classList.add("hidden");$("filterResults").innerHTML="";
+}
 const PROFIT_FEED_URL="https://pb20991.profitbase.ru/export/yandex/91076612e0266b7f1f7e04a1e0c609dc?scheme=https";
 function tagText(node,names){for(const name of names){const el=node.querySelector(name);if(el&&el.textContent.trim())return el.textContent.trim()}return ""}
 function paramText(node,names){const wanted=names.map(x=>x.toLowerCase());for(const el of node.querySelectorAll("param")){const n=(el.getAttribute("name")||"").trim().toLowerCase();if(wanted.some(x=>n===x||n.includes(x)))return el.textContent.trim()}return ""}
@@ -634,11 +685,11 @@ async function loadRemoteLots(){
   if(!response.ok)throw new Error(`HTTP ${response.status}`);
   const xml=await response.text();
   const fresh=parseProfitFeed(xml);
-  PROFIT_LOTS=fresh;profitMap=new Map(PROFIT_LOTS.map(x=>[norm(x.code),x]));buildSelect();
+  PROFIT_LOTS=fresh;profitMap=new Map(PROFIT_LOTS.map(x=>[norm(x.code),x]));buildSelect();if(filterHasRun)filterLots();
   status.textContent=`Данные актуальны: загружено ${PROFIT_LOTS.length} доступных лотов из Profitbase.`;
   status.style.color="#276749";
  }catch(err){
-  buildSelect();
+  buildSelect();if(filterHasRun)filterLots();
   status.innerHTML=`Не удалось получить живой фид. Используется встроенная резервная база (${PROFIT_LOTS.length} лотов).<br><span style="font-size:12px">Причина: ${String(err.message||err)}. Проверьте доступ к XML-фиду Profitbase и сообщения во вкладке Console.</span>`;
   status.style.color="#9b2c2c";
  }
@@ -647,10 +698,7 @@ let selectedLotCode="";
 function choose(){
  const lot=profitMap.get(norm($("lotSearch").value));
  const newCode=lot?norm(lot.code):"";
- if(newCode!==selectedLotCode){
-   $("individualPrice").value="";
-   selectedLotCode=newCode;
- }
+ if(newCode!==selectedLotCode)selectedLotCode=newCode;
  $("area").value=lot?num(lot.area):"";
  $("price").value=lot?money(lot.price):"";
  updateTrancheAvailability(lot);
@@ -670,21 +718,7 @@ function selectedPaymentTypes(){
 function paymentName(t){
  return t==="full"?"100% оплата":t==="classic"?"Классическая рассрочка":"Траншевая рассрочка";
 }
-function hasIndividualPrice(){
- return $("individualPrice").value.trim()!=="";
-}
 function updatePaymentUI(changed=null){
- const checks=[...document.querySelectorAll(".paymentCheck")];
- if(hasIndividualPrice()){
-   $("individualLockNote").classList.remove("hidden");
-   const selected=checks.filter(x=>x.checked);
-   if(selected.length>1){
-     const keep=changed&&changed.checked?changed:selected[0];
-     checks.forEach(x=>x.checked=x===keep);
-   }
- }else{
-   $("individualLockNote").classList.add("hidden");
- }
  const types=selectedPaymentTypes();
  $("classicParams").classList.toggle("hidden",!types.includes("classic"));
  $("trancheParams").classList.toggle("hidden",!types.includes("tranche"));
@@ -692,22 +726,13 @@ function updatePaymentUI(changed=null){
 function paymentCalculation(lot,t){
  if(t==="tranche"&&!TRANCHE_LOT_CODES.has(norm(lot.code)))throw new Error("Траншевая рассрочка недоступна для выбранного лота.");
  const area=lot.area, basePurchase=lot.price, booking=Math.round(6000*area);
- const individualRaw=$("individualPrice").value.trim();
- const hasIndividual=individualRaw!=="";
- const individualPrice=hasIndividual?cleanNumber(individualRaw):0;
- if(hasIndividual&&(!Number.isFinite(individualPrice)||individualPrice<=0))throw new Error("Укажите корректную цену по индивидуальным условиям.");
- if(hasIndividual&&individualPrice<=booking)throw new Error("Цена по индивидуальным условиям должна быть больше суммы бронирования.");
 
  if(t==="full"){
-   if(hasIndividual){
-     const deal=Math.round(individualPrice), dealPsm=deal/area, ddu=deal-booking;
-     return{key:t,type:"100% оплата",purchase:basePurchase,booking,ddu,deal,basePsm:basePurchase/area,dealPsm,saving:basePurchase-deal,schedule:[],hasIndividual:true};
-   }
    const basePsm=basePurchase/area, dealPsm=basePsm*.9, deal=Math.round(dealPsm*area), ddu=Math.round((dealPsm-6000)*area);
-   return{key:t,type:"100% оплата",purchase:basePurchase,booking,ddu,deal,basePsm,dealPsm,saving:basePurchase-deal,schedule:[],hasIndividual:false};
+   return{key:t,type:"100% оплата",purchase:basePurchase,booking,ddu,deal,basePsm,dealPsm,saving:basePurchase-deal,schedule:[]};
  }
 
- const purchase=hasIndividual?Math.round(individualPrice):basePurchase;
+ const purchase=basePurchase;
  const isClassic=t==="classic";
  const p=Number($(isClassic?"classicDownPayment":"trancheDownPayment").value);
  const startRaw=$(isClassic?"classicStartDate":"trancheStartDate").value;
@@ -739,7 +764,7 @@ function paymentCalculation(lot,t){
    frequency="Ежемесячно";
    termLabel="2 года";
  }
- return{key:t,type:paymentName(t),purchase:basePurchase,booking,ddu,deal:purchase,down,start,schedule,hasIndividual,paymentAmount,frequency,termLabel}
+ return{key:t,type:paymentName(t),purchase:basePurchase,booking,ddu,deal:purchase,down,start,schedule,paymentAmount,frequency,termLabel}
 }
 function comparisonCard(pay){
  const rows=[
@@ -748,7 +773,7 @@ function comparisonCard(pay){
  ];
  if(pay.key==="full"){
    rows.push(["Выгода",money(Math.max(0,pay.purchase-pay.deal))]);
-   if(!pay.hasIndividual)rows.push(["Стандартная скидка","10%"]);
+   rows.push(["Стандартная скидка","10%"]);
  }else{
    rows.push(["Первоначальный взнос",money(pay.down)]);
    rows.push(["Платёж",money(pay.paymentAmount)]);
@@ -766,7 +791,6 @@ function render(){clearError();try{
  const lot=profitMap.get(norm($("lotSearch").value));if(!lot)throw new Error("Выберите лот.");
  const types=selectedPaymentTypes();
  if(!types.length)throw new Error("Выберите хотя бы одну форму оплаты.");
- if(hasIndividualPrice()&&types.length>1)throw new Error("При индивидуальной цене можно выбрать только одну форму оплаты.");
  const pays=types.map(t=>paymentCalculation(lot,t));
  const isMulti=pays.length>1;
  const isS2=norm(lot.building)==="С2";
@@ -807,7 +831,7 @@ function render(){clearError();try{
    $("paymentMetrics").classList.remove("hidden");
    let pm=[metric("Форма оплаты",pay.type),metric("Сумма бронирования",money(pay.booking)),metric("Стоимость по ДДУ",money(pay.ddu))];
    if(pay.type==="100% оплата"){
-     pm.push(metric("Цена за м² в сделке",money(pay.dealPsm),pay.hasIndividual?"":"скидка 10%"),metric("Стоимость сделки",money(pay.deal)));
+     pm.push(metric("Цена за м² в сделке",money(pay.dealPsm),"скидка 10%"),metric("Стоимость сделки",money(pay.deal)));
    }else{
      pm.push(metric("Первоначальный взнос",money(pay.down)),metric("Количество последующих платежей",String(pay.schedule.length)));
    }
@@ -838,16 +862,12 @@ loadRemoteLots();
 document.querySelectorAll(".paymentCheck").forEach(ch=>ch.addEventListener("change",()=>updatePaymentUI(ch)));
 $("lotSearch").addEventListener("input",choose);
 $("lotSearch").addEventListener("change",choose);
-$("individualPrice").addEventListener("input",()=>updatePaymentUI());
-$("individualPrice").addEventListener("blur",()=>{
- const raw=$("individualPrice").value.trim();
- if(raw){
-   const v=cleanNumber(raw);
-   if(v>0)$("individualPrice").value=Math.round(v).toLocaleString("ru-RU");
- }
- updatePaymentUI();
+$("filterBtn").addEventListener("click",filterLots);
+$("filterResetBtn").addEventListener("click",resetLotFilters);
+$("filterResults").addEventListener("click",e=>{
+ const button=e.target.closest("button[data-lot-code]");if(!button)return;
+ $("lotSearch").value=button.dataset.lotCode;choose();clearError();
 });
-
 $("calcBtn").addEventListener("click",render);
 $("printBtn").addEventListener("click",()=>{render();if($("error").style.display!=="block")window.print()});
 document.addEventListener("click",e=>{if(e.target.matches(".gallery img")){$("modalImage").src=e.target.src;$("imageModal").classList.add("open")}});
