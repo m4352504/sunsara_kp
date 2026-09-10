@@ -542,7 +542,7 @@ html,body,
 <div id="classicParams" class="payment-params hidden">
 <h3>Классическая рассрочка</h3>
 <div><label>Первоначальный взнос, %</label><input id="classicDownPayment" type="number" min="0" max="100" step=".1" value="30"></div>
-<div><label>Срок</label><select id="classicTerm"><option value="1">1 год</option><option value="2">2 года</option></select></div>
+<div><label>Срок</label><select id="classicTerm"><option value="1">1 год</option><option value="2" id="classicTermTwoYears">2 года</option></select><div class="hint" id="classicTermNote">Срок 2 года доступен при первоначальном взносе от 50%.</div></div>
 <div><label>Периодичность</label><select id="classicFrequency"><option value="monthly">Ежемесячно</option><option value="quarterly">Ежеквартально</option></select></div>
 <div><label>Дата начала</label><input id="classicStartDate" type="date"></div>
 </div>
@@ -738,6 +738,14 @@ function updatePaymentUI(changed=null){
  $("classicParams").classList.toggle("hidden",!types.includes("classic"));
  $("trancheParams").classList.toggle("hidden",!types.includes("tranche"));
 }
+function updateClassicTermAvailability(){
+ const downPayment=Number($("classicDownPayment").value);
+ const twoYears=$("classicTermTwoYears");
+ const isAllowed=Number.isFinite(downPayment)&&downPayment>=50;
+ twoYears.disabled=!isAllowed;
+ if(!isAllowed&&$("classicTerm").value==="2")$("classicTerm").value="1";
+ $("classicTermNote").textContent=isAllowed?"Доступны сроки 1 год и 2 года.":"При первоначальном взносе меньше 50% доступен только срок 1 год.";
+}
 function paymentCalculation(lot,t){
  if(t==="tranche"&&!TRANCHE_LOT_CODES.has(norm(lot.code)))throw new Error("Траншевая рассрочка недоступна для выбранного лота.");
  const area=lot.area, basePurchase=lot.price, booking=Math.round(6000*area);
@@ -761,6 +769,7 @@ function paymentCalculation(lot,t){
 
  if(t==="classic"){
    const term=Number($("classicTerm").value),freq=$("classicFrequency").value;
+   if(p<50&&term===2)throw new Error("При первоначальном взносе меньше 50% классическая рассрочка доступна только на 1 год.");
    const count=term===1?(freq==="monthly"?11:4):(freq==="monthly"?23:8);
    const step=freq==="monthly"?1:3;
    paymentAmount=Math.floor((ddu-rawDown)/count);
@@ -877,6 +886,8 @@ loadRemoteLots();
 document.querySelectorAll(".paymentCheck").forEach(ch=>ch.addEventListener("change",()=>updatePaymentUI(ch)));
 $("lotSearch").addEventListener("input",choose);
 $("lotSearch").addEventListener("change",choose);
+$("classicDownPayment").addEventListener("input",updateClassicTermAvailability);
+$("classicDownPayment").addEventListener("change",updateClassicTermAvailability);
 $("filterBtn").addEventListener("click",filterLots);
 $("filterResetBtn").addEventListener("click",resetLotFilters);
 $("filterResults").addEventListener("click",e=>{
@@ -890,4 +901,5 @@ $("modalClose").addEventListener("click",()=>$("imageModal").classList.remove("o
 $("imageModal").addEventListener("click",e=>{if(e.target===$("imageModal"))$("imageModal").classList.remove("open")});$("modalImage").addEventListener("click",e=>e.stopPropagation());
 document.addEventListener("keydown",e=>{if(e.key==="Escape")$("imageModal").classList.remove("open")});
 updatePaymentUI();
+updateClassicTermAvailability();
 </script></body></html>
